@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viewer Data Ibangga 2026 Kota Banjarmasin- Cabang</title>
+<style>
+  :root{
+    --primary:#1d4ed8;
+    --primary-dark:#1e3a8a;
+    --bg:#f3f4f6;
+    --card:#ffffff;
+    --border:#e5e7eb;
+    --text:#111827;
+    --muted:#6b7280;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+  }
+  header{
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    color:#fff;
+    padding:24px 16px;
+    text-align:center;
+  }
+  header h1{margin:0;font-size:1.4rem;}
+  header p{margin:6px 0 0;opacity:.85;font-size:.9rem;}
+
+  .container{
+    max-width:900px;
+    margin:0 auto;
+    padding:20px 16px 60px;
+  }
+
+  .tabs{
+    display:flex;
+    gap:8px;
+    margin-bottom:16px;
+    background:var(--card);
+    padding:6px;
+    border-radius:10px;
+    border:1px solid var(--border);
+  }
+  .tab-btn{
+    flex:1;
+    padding:10px;
+    border:none;
+    background:transparent;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:.9rem;
+    font-weight:600;
+    color:var(--muted);
+    transition:.15s;
+  }
+  .tab-btn.active{
+    background:var(--primary);
+    color:#fff;
+  }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:18px;
+    margin-bottom:16px;
+  }
+
+  label{
+    display:block;
+    font-size:.85rem;
+    font-weight:600;
+    margin-bottom:6px;
+    color:var(--muted);
+  }
+  select, button.action{
+    width:100%;
+    padding:10px 12px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    font-size:.95rem;
+    background:#fff;
+  }
+  select:disabled{background:#f3f4f6;color:#9ca3af;}
+
+  .field{margin-bottom:14px;}
+
+  button.action{
+    background:var(--primary);
+    color:#fff;
+    border:none;
+    font-weight:600;
+    cursor:pointer;
+    margin-top:4px;
+  }
+  button.action:disabled{
+    background:#9ca3af;
+    cursor:not-allowed;
+  }
+
+  .status{
+    font-size:.85rem;
+    color:var(--muted);
+    margin-top:8px;
+    min-height:1.2em;
+  }
+  .status.error{color:#dc2626;}
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:.85rem;
+  }
+  th,td{
+    text-align:left;
+    padding:8px 10px;
+    border-bottom:1px solid var(--border);
+    white-space:nowrap;
+  }
+  th{
+    background:#f9fafb;
+    position:sticky;
+    top:0;
+  }
+  .table-wrap{
+    overflow-x:auto;
+    border:1px solid var(--border);
+    border-radius:10px;
+  }
+  .empty{
+    text-align:center;
+    color:var(--muted);
+    padding:30px 10px;
+    font-size:.9rem;
+  }
+  .count-badge{
+    display:inline-block;
+    background:#e0e7ff;
+    color:var(--primary-dark);
+    font-size:.75rem;
+    font-weight:700;
+    padding:3px 10px;
+    border-radius:999px;
+    margin-bottom:10px;
+  }
+  .loader{
+    display:inline-block;
+    width:14px;height:14px;
+    border:2px solid #fff;
+    border-top-color:transparent;
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+    vertical-align:middle;
+    margin-right:6px;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  footer{
+    text-align:center;
+    color:var(--muted);
+    font-size:.75rem;
+    padding:20px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Viewer Data Data Ibangga 2026 Kota Banjarmasin</h1>
+  <p>Pencarian data responden per Kecamatan/Kelurahan atau per Petugas</p>
+</header>
+
+<div class="container">
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="wilayah">Cari per Wilayah</button>
+    <button class="tab-btn" data-tab="petugas">Cari per Petugas</button>
+  </div>
+
+  <!-- TAB WILAYAH -->
+  <div class="card tab-panel" id="panel-wilayah">
+    <div class="field">
+      <label for="selKecamatan">Kecamatan</label>
+      <select id="selKecamatan"><option value="">Memuat...</option></select>
+    </div>
+    <div class="field">
+      <label for="selKelurahan">Kelurahan</label>
+      <select id="selKelurahan" disabled><option value="">Pilih kecamatan dahulu</option></select>
+    </div>
+    <button class="action" id="btnCariWilayah" disabled>Tampilkan Data</button>
+    <div class="status" id="statusWilayah"></div>
+  </div>
+
+  <!-- TAB PETUGAS -->
+  <div class="card tab-panel" id="panel-petugas" style="display:none;">
+    <div class="field">
+      <label for="selPetugas">Petugas</label>
+      <select id="selPetugas"><option value="">Memuat...</option></select>
+    </div>
+    <button class="action" id="btnCariPetugas">Tampilkan Data</button>
+    <div class="status" id="statusPetugas"></div>
+  </div>
+
+  <!-- HASIL -->
+  <div class="card" id="hasilCard" style="display:none;">
+    <div id="countBadge" class="count-badge"></div>
+    <div class="table-wrap">
+      <table id="tabelHasil">
+        <thead><tr id="theadRow"></tr></thead>
+        <tbody id="tbodyHasil"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<footer>Data ditarik langsung dari Google Sheets (Final Data Utama) lewat Apps Script Web App.</footer>
+
+<script>
+/* =========================================================
+   GANTI URL DI BAWAH INI dengan URL Web App hasil Deploy
+   (Deploy > New deployment > Web app > Execute as: Me,
+   Who has access: Anyone) Apps Script kamu.
+   Contoh: https://script.google.com/macros/s/AKfycb.../exec
+   ========================================================= */
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxCi8Vvz4_Qo-_q5b_vzzcNP-A1g3Svjh6dVHuVT5-EOmR-bRtVt_o_esPoHcjrv8KrnA/exec";
+
+const KOLOM_LABEL = {
+  Kode_Petugas: "Kode Petugas",
+  Nama_Petugas: "Nama Petugas",
+  Kecamatan: "Kecamatan",
+  Kelurahan: "Kelurahan",
+  No_RT_Terpilih: "No RT",
+  RT: "RT",
+  Responden_Terpilih_ke: "Responden ke",
+  IR01_Nama_Kepala_Keluarga: "Nama Kepala Keluarga",
+  Tanggal_Pengisian: "Tanggal Pengisian"
+};
+
+async function callApi(params) {
+  const url = new URL(WEB_APP_URL);
+  Object.keys(params).forEach(k => url.searchParams.set(k, params[k]));
+  const res = await fetch(url.toString());
+  if (!res.ok) throw new Error("HTTP " + res.status);
+  return res.json();
+}
+
+function setStatus(el, msg, isError) {
+  el.textContent = msg || "";
+  el.classList.toggle("error", !!isError);
+}
+
+function isiSelect(selectEl, daftar, placeholder) {
+  selectEl.innerHTML = "";
+  const optDefault = document.createElement("option");
+  optDefault.value = "";
+  optDefault.textContent = placeholder;
+  selectEl.appendChild(optDefault);
+  daftar.forEach(item => {
+    const opt = document.createElement("option");
+    opt.value = item.value;
+    opt.textContent = item.label;
+    selectEl.appendChild(opt);
+  });
+}
+
+function renderTabel(daftar) {
+  const hasilCard = document.getElementById("hasilCard");
+  const tbody = document.getElementById("tbodyHasil");
+  const thead = document.getElementById("theadRow");
+  const badge = document.getElementById("countBadge");
+
+  hasilCard.style.display = "block";
+  tbody.innerHTML = "";
+  thead.innerHTML = "";
+
+  if (!daftar || daftar.length === 0) {
+    badge.textContent = "0 data ditemukan";
+    tbody.innerHTML = '<tr><td class="empty" colspan="99">Tidak ada data.</td></tr>';
+    return;
+  }
+
+  badge.textContent = daftar.length + " data ditemukan";
+
+  const kolomKeys = Object.keys(KOLOM_LABEL).filter(k => k in daftar[0]);
+  kolomKeys.forEach(k => {
+    const th = document.createElement("th");
+    th.textContent = KOLOM_LABEL[k] || k;
+    thead.appendChild(th);
+  });
+
+  daftar.forEach(row => {
+    const tr = document.createElement("tr");
+    kolomKeys.forEach(k => {
+      const td = document.createElement("td");
+      td.textContent = row[k] === undefined || row[k] === null ? "" : row[k];
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+}
+
+/* ---------- TABS ---------- */
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    const tab = btn.dataset.tab;
+    document.getElementById("panel-wilayah").style.display = tab === "wilayah" ? "block" : "none";
+    document.getElementById("panel-petugas").style.display = tab === "petugas" ? "block" : "none";
+    document.getElementById("hasilCard").style.display = "none";
+  });
+});
+
+/* ---------- WILAYAH ---------- */
+const selKecamatan = document.getElementById("selKecamatan");
+const selKelurahan = document.getElementById("selKelurahan");
+const btnCariWilayah = document.getElementById("btnCariWilayah");
+const statusWilayah = document.getElementById("statusWilayah");
+
+async function loadKecamatan() {
+  try {
+    const res = await callApi({ api: "daftarKecamatan" });
+    if (res.status !== "success") throw new Error(res.message);
+    isiSelect(selKecamatan, res.daftar, "-- Pilih Kecamatan --");
+  } catch (err) {
+    setStatus(statusWilayah, "Gagal memuat kecamatan: " + err.message, true);
+  }
+}
+
+selKecamatan.addEventListener("change", async () => {
+  const val = selKecamatan.value;
+  selKelurahan.disabled = true;
+  btnCariWilayah.disabled = true;
+  isiSelect(selKelurahan, [], "Memuat...");
+  setStatus(statusWilayah, "");
+
+  if (!val) {
+    isiSelect(selKelurahan, [], "Pilih kecamatan dahulu");
+    return;
+  }
+
+  try {
+    const res = await callApi({ api: "daftarKelurahan", kecamatan: val });
+    if (res.status !== "success") throw new Error(res.message);
+    isiSelect(selKelurahan, res.daftar, "-- Pilih Kelurahan --");
+    selKelurahan.disabled = false;
+  } catch (err) {
+    setStatus(statusWilayah, "Gagal memuat kelurahan: " + err.message, true);
+  }
+});
+
+selKelurahan.addEventListener("change", () => {
+  btnCariWilayah.disabled = !selKelurahan.value;
+});
+
+btnCariWilayah.addEventListener("click", async () => {
+  setStatus(statusWilayah, "");
+  btnCariWilayah.disabled = true;
+  btnCariWilayah.innerHTML = '<span class="loader"></span>Memuat...';
+  try {
+    const res = await callApi({
+      api: "dataPerKelurahan",
+      kecamatan: selKecamatan.value,
+      kelurahan: selKelurahan.value
+    });
+    if (res.status !== "success") throw new Error(res.message);
+    renderTabel(res.daftar);
+  } catch (err) {
+    setStatus(statusWilayah, "Gagal memuat data: " + err.message, true);
+  } finally {
+    btnCariWilayah.disabled = false;
+    btnCariWilayah.textContent = "Tampilkan Data";
+  }
+});
+
+/* ---------- PETUGAS ---------- */
+const selPetugas = document.getElementById("selPetugas");
+const btnCariPetugas = document.getElementById("btnCariPetugas");
+const statusPetugas = document.getElementById("statusPetugas");
+
+async function loadPetugas() {
+  try {
+    const res = await callApi({ api: "daftarPetugas" });
+    if (res.status !== "success") throw new Error(res.message);
+    isiSelect(selPetugas, res.daftar, "-- Pilih Petugas --");
+  } catch (err) {
+    setStatus(statusPetugas, "Gagal memuat petugas: " + err.message, true);
+  }
+}
+
+btnCariPetugas.addEventListener("click", async () => {
+  if (!selPetugas.value) {
+    setStatus(statusPetugas, "Pilih petugas terlebih dahulu.", true);
+    return;
+  }
+  setStatus(statusPetugas, "");
+  btnCariPetugas.disabled = true;
+  btnCariPetugas.innerHTML = '<span class="loader"></span>Memuat...';
+  try {
+    const res = await callApi({ api: "dataPerPetugas", kode: selPetugas.value });
+    if (res.status !== "success") throw new Error(res.message);
+    renderTabel(res.daftar);
+  } catch (err) {
+    setStatus(statusPetugas, "Gagal memuat data: " + err.message, true);
+  } finally {
+    btnCariPetugas.disabled = false;
+    btnCariPetugas.textContent = "Tampilkan Data";
+  }
+});
+
+/* ---------- INIT ---------- */
+if (WEB_APP_URL.indexOf("GANTI_DENGAN_URL") !== -1) {
+  setStatus(statusWilayah, "⚠️ WEB_APP_URL belum diisi di kode HTML (cari WEB_APP_URL di script).", true);
+  setStatus(statusPetugas, "⚠️ WEB_APP_URL belum diisi di kode HTML.", true);
+} else {
+  loadKecamatan();
+  loadPetugas();
+}
+</script>
+
+</body>
+</html>
